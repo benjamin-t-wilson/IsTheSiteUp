@@ -1,4 +1,5 @@
 ﻿using IsTheSiteUp.Entities.DTOs;
+using IsTheSiteUp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +21,7 @@ namespace IsTheSiteUp.Controllers
         [HttpPost]
         public async Task<ActionResult> GetSiteStatus([FromBody][Required] StatusCheckDto statusDto)
         {
-            if (IsInvalidUrl(statusDto.Site))
+            if (statusDto.Site.IsInvalidUrl())
             {
                 return BadRequest("URL is invalid. Please make sure it is present and starts with http security protocol");
             }
@@ -32,11 +33,6 @@ namespace IsTheSiteUp.Controllers
             };
 
             return Ok(statusResponseDto);
-        }
-
-        private bool IsInvalidUrl(string url)
-        {
-            return string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.Absolute, out var _);
         }
     }
 }
